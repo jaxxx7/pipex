@@ -6,16 +6,19 @@
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 14:51:07 by mhachem           #+#    #+#             */
-/*   Updated: 2025/09/14 12:53:03 by mhachem          ###   ########.fr       */
+/*   Updated: 2025/09/14 15:40:36 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <fcntl.h>
-#include "../libft/libft.h"
+#ifndef PIPEX_H
+# define PIPEX_H
+
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <sys/wait.h>
+# include <fcntl.h>
+# include "../libft/libft.h"
 
 typedef struct s_pipex
 {
@@ -27,7 +30,7 @@ typedef struct s_pipex
 	int		fd_outfile;
 }				t_pipex;
 
-t_pipex	ft_init_pipex(t_pipex pipex);
+t_pipex	ft_init_pipex(void);
 void	ft_check_args(char **argv, int argc, t_pipex *pipex);
 void	ft_parse_args(char **argv, t_pipex *pipex);
 t_pipex	ft_parse_cmds(t_pipex pipex, char **envp);
@@ -35,3 +38,5 @@ void	ft_exec(t_pipex pipex);
 char	*get_path_line(char **envp);
 void	ft_cleanup(t_pipex *pipex);
 void	ft_free_split(char **split);
+
+#endif
