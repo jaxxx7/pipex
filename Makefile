@@ -3,7 +3,7 @@ NAME = pipex
 
 # Compilateur et flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -Iinclude -no-pie -g
+CFLAGS = -Wall -Wextra -Werror -Iinclude -g
 
 SRC_DIR = src
 SRC =	$(SRC_DIR)/pipex.c \
