@@ -6,11 +6,22 @@
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 15:27:48 by mhachem           #+#    #+#             */
-/*   Updated: 2025/08/24 18:34:33 by mhachem          ###   ########.fr       */
+/*   Updated: 2025/09/14 13:06:08 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+static void	exec_child(char *cmd_path, char **cmd_args, int fd_in, int fd_out)
+{
+	if (!cmd_path)
+		exit(EXIT_FAILURE);
+	dup2(fd_in, STDIN_FILENO);
+	dup2(fd_out, STDOUT_FILENO);
+	execve(cmd_path, cmd_args, NULL);
+	perror("execve failed");
+	exit(EXIT_FAILURE);
+}
 
 void	ft_exec(t_pipex pipex)
 {
@@ -24,25 +35,15 @@ void	ft_exec(t_pipex pipex)
 	if (pid1 == 0)
 	{
 		close(fd[0]);
-		dup2(pipex.fd_infile, STDIN_FILENO);
-		dup2(fd[1], STDOUT_FILENO);
-		if (!pipex.cmd_paths[0])
-			exit(EXIT_FAILURE);
-		execve(pipex.cmd_paths[0], pipex.cmd_args[0], NULL);
-		perror("execve failed");
-		exit(EXIT_FAILURE);
+		exec_child(pipex.cmd_paths[0], pipex.cmd_args[0],
+			pipex.fd_infile, fd[1]);
 	}
 	pid2 = fork();
 	if (pid2 == 0)
 	{
 		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
-		dup2(pipex.fd_outfile, STDOUT_FILENO);
-		if (!pipex.cmd_paths[1])
-			exit(EXIT_FAILURE);
-		execve(pipex.cmd_paths[1], pipex.cmd_args[1], NULL);
-		perror("execve failed");
-		exit(EXIT_FAILURE);
+		exec_child(pipex.cmd_paths[1], pipex.cmd_args[1],
+			fd[0], pipex.fd_outfile);
 	}
 	close(fd[0]);
 	close(fd[1]);

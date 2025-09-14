@@ -6,7 +6,7 @@
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 14:48:53 by mhachem           #+#    #+#             */
-/*   Updated: 2025/08/24 18:25:59 by mhachem          ###   ########.fr       */
+/*   Updated: 2025/09/14 14:20:19 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ t_pipex	ft_init_pipex(t_pipex pipex)
 {
 	pipex.infile = NULL;
 	pipex.outfile = NULL;
+	pipex.fd_infile = -1;
+	pipex.fd_outfile = -1;
 	pipex.cmd_paths = malloc(sizeof(char *) * 3);
 	if (!pipex.cmd_paths)
 	{

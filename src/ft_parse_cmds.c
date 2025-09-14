@@ -6,11 +6,26 @@
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 12:49:14 by mhachem           #+#    #+#             */
-/*   Updated: 2025/08/24 18:34:07 by mhachem          ###   ########.fr       */
+/*   Updated: 2025/09/14 13:12:23 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	ft_free_split(char **split)
+{
+	int	i;
+
+	if (!split)
+		return ;
+	i = 0;
+	while (split[i])
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
+}
 
 char	*get_path_line(char **envp)
 {
@@ -26,39 +41,46 @@ char	*get_path_line(char **envp)
 	return (0);
 }
 
+static char	*find_cmd_path(char *cmd, char **paths)
+{
+	char	*tmp;
+	char	*full;
+	int		i;
+
+	i = 0;
+	while (paths[i])
+	{
+		tmp = ft_strjoin(paths[i], "/");
+		full = ft_strjoin(tmp, cmd);
+		free(tmp);
+		if (access(full, X_OK) == 0)
+			return (full);
+		free(full);
+		i++;
+	}
+	return (NULL);
+}
+
 t_pipex	ft_parse_cmds(t_pipex pipex, char **envp)
 {
-	char	*path_tmp;
-	char	**path_split;
-	int		i;
-	char	*tmp;
+	char	*path_line;
+	char	**paths;
 	int		j;
 
-	path_tmp = get_path_line(envp);
-	path_split = ft_split(path_tmp, ':');
-	i = 0;
+	path_line = get_path_line(envp);
+	paths = ft_split(path_line, ':');
 	j = 0;
 	while (j < 2)
 	{
-		i = 0;
-		while (path_split[i])
+		pipex.cmd_paths[j] = find_cmd_path(pipex.cmd_args[j][0], paths);
+		if (pipex.cmd_paths[j] == NULL)
 		{
-			tmp = ft_strjoin(path_split[i], "/");
-			path_tmp = ft_strjoin(tmp, pipex.cmd_args[j][0]);
-			free(tmp);
-			if (access(path_tmp, X_OK) == 0)
-			{
-				pipex.cmd_paths[j] = path_tmp;
-				break ;
-			}
-			free(path_tmp);
-			i++;
+			ft_cleanup(&pipex);
+			ft_free_split(paths);
+			exit(EXIT_FAILURE);
 		}
 		j++;
 	}
-	i = 0;
-	while (path_split[i])
-		free(path_split[i++]);
-	free(path_split);
+	ft_free_split(paths);
 	return (pipex);
 }
