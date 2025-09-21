@@ -6,7 +6,7 @@
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:00:35 by mhachem           #+#    #+#             */
-/*   Updated: 2025/09/21 11:11:07 by mhachem          ###   ########.fr       */
+/*   Updated: 2025/09/21 13:16:58 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	pipex;
 
-	if (argc == 5 && !ft_zero(argv))
+	if (argc == 5 && !ft_zero(argv) && *envp)
 	{
 		pipex = ft_init_pipex();
 		ft_check_args(argv, argc, &pipex);

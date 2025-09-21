@@ -6,23 +6,11 @@
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 12:49:14 by mhachem           #+#    #+#             */
-/*   Updated: 2025/09/21 11:07:00 by mhachem          ###   ########.fr       */
+/*   Updated: 2025/09/21 13:24:06 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void	ft_free_split(char **split)
-{
-	int	i;
-
-	if (!split)
-		return ;
-	i = 0;
-	while (split[i])
-		free(split[i++]);
-	free(split);
-}
 
 char	*get_path_line(char **envp)
 {
@@ -58,6 +46,28 @@ static char	*find_cmd_path(char *cmd, char **paths)
 	return (NULL);
 }
 
+static void	check_cmd_args(char **args, char **paths)
+{
+	if (!args[0] || !args[0][0])
+	{
+		ft_free_split(paths);
+		exit(EXIT_FAILURE);
+	}
+}
+
+static char	*get_cmd_path(char **args, char **paths)
+{
+	char	*path;
+
+	path = find_cmd_path(args[0], paths);
+	if (!path)
+	{
+		ft_free_split(paths);
+		exit(EXIT_FAILURE);
+	}
+	return (path);
+}
+
 t_pipex	ft_parse_cmds(t_pipex pipex, char **envp)
 {
 	char	*path_line;
@@ -65,21 +75,17 @@ t_pipex	ft_parse_cmds(t_pipex pipex, char **envp)
 	int		j;
 
 	path_line = get_path_line(envp);
+	if (!path_line)
+	{
+		ft_cleanup(&pipex);
+		exit(EXIT_FAILURE);
+	}
 	paths = ft_split(path_line, ':');
 	j = 0;
 	while (j < 2)
 	{
-		if (!pipex.cmd_args[j][0] || !pipex.cmd_args[j][0][0])
-		{
-			ft_free_split(paths);
-			exit(EXIT_FAILURE);
-		}
-		pipex.cmd_paths[j] = find_cmd_path(pipex.cmd_args[j][0], paths);
-		if (!pipex.cmd_paths[j])
-		{
-			ft_free_split(paths);
-			exit(EXIT_FAILURE);
-		}
+		check_cmd_args(pipex.cmd_args[j], paths);
+		pipex.cmd_paths[j] = get_cmd_path(pipex.cmd_args[j], paths);
 		j++;
 	}
 	ft_free_split(paths);
