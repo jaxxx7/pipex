@@ -1,26 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_parse_args.c                                    :+:      :+:    :+:   */
+/*   ft_zero.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/18 14:29:25 by mhachem           #+#    #+#             */
-/*   Updated: 2025/09/21 10:27:35 by mhachem          ###   ########.fr       */
+/*   Created: 2025/09/21 10:26:06 by mhachem           #+#    #+#             */
+/*   Updated: 2025/09/21 11:12:42 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	ft_parse_args(char **argv, t_pipex *pipex)
+int	ft_zero(char **argv)
 {
-	pipex->cmd_args[0] = ft_split(argv[2], ' ');
-	pipex->cmd_args[1] = ft_split(argv[3], ' ');
-	pipex->cmd_args[2] = NULL;
-	if (!pipex->cmd_args[0] || !pipex->cmd_args[0][0])
+	int	i;
+
+	i = 0;
+	while (argv[2][i])
 	{
-		perror("invalid command");
-		ft_cleanup(pipex);
-		exit(EXIT_FAILURE);
+		if (argv[2][i] != ' ')
+			break ;
+		i++;
 	}
+	if (!argv[2][i])
+		return (1);
+	i = 0;
+	while (argv[3][i])
+	{
+		if (argv[3][i] != ' ')
+			break ;
+		i++;
+	}
+	if (!argv[3][i])
+		return (1);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/16 12:49:14 by mhachem           #+#    #+#             */
-/*   Updated: 2025/09/14 13:12:23 by mhachem          ###   ########.fr       */
+/*   Updated: 2025/09/21 11:07:00 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,7 @@ void	ft_free_split(char **split)
 		return ;
 	i = 0;
 	while (split[i])
-	{
-		free(split[i]);
-		i++;
-	}
+		free(split[i++]);
 	free(split);
 }
 
@@ -38,7 +35,7 @@ char	*get_path_line(char **envp)
 			return (envp[i] + 5);
 		i++;
 	}
-	return (0);
+	return (NULL);
 }
 
 static char	*find_cmd_path(char *cmd, char **paths)
@@ -72,10 +69,14 @@ t_pipex	ft_parse_cmds(t_pipex pipex, char **envp)
 	j = 0;
 	while (j < 2)
 	{
-		pipex.cmd_paths[j] = find_cmd_path(pipex.cmd_args[j][0], paths);
-		if (pipex.cmd_paths[j] == NULL)
+		if (!pipex.cmd_args[j][0] || !pipex.cmd_args[j][0][0])
 		{
-			ft_cleanup(&pipex);
+			ft_free_split(paths);
+			exit(EXIT_FAILURE);
+		}
+		pipex.cmd_paths[j] = find_cmd_path(pipex.cmd_args[j][0], paths);
+		if (!pipex.cmd_paths[j])
+		{
 			ft_free_split(paths);
 			exit(EXIT_FAILURE);
 		}

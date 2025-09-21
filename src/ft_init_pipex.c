@@ -6,7 +6,7 @@
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 14:48:53 by mhachem           #+#    #+#             */
-/*   Updated: 2025/09/14 15:40:48 by mhachem          ###   ########.fr       */
+/*   Updated: 2025/09/21 10:06:39 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 t_pipex	ft_init_pipex(void)
 {
 	t_pipex	pipex;
-	
+
 	pipex.infile = NULL;
 	pipex.outfile = NULL;
 	pipex.fd_infile = -1;
@@ -33,7 +33,6 @@ t_pipex	ft_init_pipex(void)
 	if (!pipex.cmd_args)
 	{
 		free(pipex.cmd_paths);
-		perror("malloc failed for cmd_args");
 		exit(EXIT_FAILURE);
 	}
 	pipex.cmd_args[0] = NULL;

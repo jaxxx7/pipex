@@ -13,7 +13,8 @@ SRC =	$(SRC_DIR)/pipex.c \
 		$(SRC_DIR)/ft_parse_cmds.c \
 		$(SRC_DIR)/ft_check_args.c \
 		$(SRC_DIR)/ft_cleanup.c \
-	
+		$(SRC_DIR)/ft_zero.c \
+
 OBJ = $(SRC:.c=.o)
 
 # Répertoire de la libft

@@ -6,7 +6,7 @@
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 14:51:07 by mhachem           #+#    #+#             */
-/*   Updated: 2025/09/14 15:40:36 by mhachem          ###   ########.fr       */
+/*   Updated: 2025/09/21 10:36:55 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,6 @@ void	ft_exec(t_pipex pipex);
 char	*get_path_line(char **envp);
 void	ft_cleanup(t_pipex *pipex);
 void	ft_free_split(char **split);
+int		ft_zero(char **argv);
 
 #endif
