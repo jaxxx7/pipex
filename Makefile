@@ -1,43 +1,30 @@
-# Nom de l'exécutable
 NAME = pipex
 
-# Compilateur et flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -Iinclude -g
 
-SRC_DIR = src
-SRC =	$(SRC_DIR)/pipex.c \
-		$(SRC_DIR)/ft_init_pipex.c \
-		$(SRC_DIR)/ft_exec.c \
-		$(SRC_DIR)/ft_parse_args.c \
-		$(SRC_DIR)/ft_parse_cmds.c \
-		$(SRC_DIR)/ft_check_args.c \
-		$(SRC_DIR)/ft_cleanup.c \
-		$(SRC_DIR)/ft_zero.c \
+CFLAGS = -Werror -Wall -Wextra -Iinclude/
 
-OBJ = $(SRC:.c=.o)
+RM = rm -rf
 
-# Répertoire de la libft
-LIBFT_DIR = libft
-LIBFT = $(LIBFT_DIR)/libft.a
+SRCS = 	src/pipex.c\
+		src/utils.c\
+		libft/libft.a\
 
-# Compilation
-all: $(LIBFT) $(NAME)
+$(NAME) :
+	make all -C libft
+	gcc $(CFLAGS) $(SRCS) -o $(NAME)
 
-$(LIBFT):
-	@$(MAKE) -C $(LIBFT_DIR) > /dev/null
-	@echo "libft OK"
 
-$(NAME): $(OBJ)
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) > /dev/null
-	@echo "pipex OK"
+all : $(NAME)
 
-clean:
-	@$(MAKE) clean -C $(LIBFT_DIR) > /dev/null
-	@rm -f $(OBJ)
+fclean : clean
+	$(RM) $(NAME)
+	make fclean -C libft
 
-fclean: clean
-	@$(MAKE) fclean -C $(LIBFT_DIR) > /dev/null
-	@rm -f $(NAME)
+clean :
+	$(RM) $(NAME)
+	make clean -C libft
 
-re: fclean all
+re : fclean all
+
+.PHONY : all clean fclean re

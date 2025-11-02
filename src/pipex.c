@@ -5,25 +5,70 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhachem <mhachem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/09 16:00:35 by mhachem           #+#    #+#             */
-/*   Updated: 2025/09/21 13:16:58 by mhachem          ###   ########.fr       */
+/*   Created: 2025/11/02 12:21:32 by mhachem           #+#    #+#             */
+/*   Updated: 2025/11/02 12:23:54 by mhachem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	main(int argc, char **argv, char **envp)
-{
-	t_pipex	pipex;
+#include "pipex.h"
 
-	if (argc == 5 && !ft_zero(argv) && *envp)
+void	exec(char *cmd, char **env)
+{
+	char	**s_cmd;
+	char	*path;
+
+	s_cmd = ft_split(cmd, ' ');
+	if (!s_cmd)
+		exit(1);
+	path = get_path(s_cmd[0], env);
+	if (execve(path, s_cmd, env) == -1)
 	{
-		pipex = ft_init_pipex();
-		ft_check_args(argv, argc, &pipex);
-		ft_parse_args(argv, &pipex);
-		pipex = ft_parse_cmds(pipex, envp);
-		ft_exec(pipex);
-		ft_cleanup(&pipex);
+		ft_putstr_fd("pipex: command not found: ", 2);
+		ft_putendl_fd(s_cmd[0], 2);
+		if (path)
+			free(path);
+		ft_free_tab(s_cmd);
+		exit(127);
 	}
-	return (0);
+}
+
+void	child(char **av, int *p_fd, char **env)
+{
+	int		fd;
+
+	fd = open_file(av[1], 0);
+	dup2(fd, 0);
+	dup2(p_fd[1], 1);
+	close(p_fd[0]);
+	exec(av[2], env);
+}
+
+void	parent(char **av, int *p_fd, char **env)
+{
+	int		fd;
+
+	fd = open_file(av[4], 1);
+	dup2(fd, 1);
+	dup2(p_fd[0], 0);
+	close(p_fd[1]);
+	exec(av[3], env);
+}
+
+int	main(int ac, char **av, char **env)
+{
+	int		p_fd[2];
+	pid_t	pid;
+
+	if (ac != 5)
+		exit_handler(1);
+	if (pipe(p_fd) == -1)
+		exit(-1);
+	pid = fork();
+	if (pid == -1)
+		exit(-1);
+	if (!pid)
+		child(av, p_fd, env);
+	parent(av, p_fd, env);
 }
